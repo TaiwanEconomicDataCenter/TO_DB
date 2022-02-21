@@ -103,6 +103,7 @@ def SELECT_DF_KEY(NAME):
     
     engine = create_engine('mysql+pymysql://root:'+pwd+'@localhost:3306/'+NAME.lower())
     DF_KEY = pd.read_sql_query("SELECT * FROM "+NAME.lower()+"_key", engine)
+    DF_KEY = DF_KEY.applymap(lambda x: int(x) if str(x).isnumeric() else x)
 
     return DF_KEY
 
