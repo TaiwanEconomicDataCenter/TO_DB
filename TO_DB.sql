@@ -15,3 +15,6 @@ SELECT * FROM us.us_key;
 SELECT * FROM intline.intline_key;
 SELECT * FROM asia.asia_key;
 DESC qnia.qnia_key;
+
+/*backup*/
+/*source C:/Users/user/Desktop/MEI202201.sql;*/
