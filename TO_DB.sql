@@ -1,4 +1,4 @@
-SELECT db_table FROM qnia.qnia_key GROUP BY db_table;
+SELECT db_table FROM us.us_key GROUP BY db_table ORDER BY db_table;
 SELECT count(*) AS shape FROM qnia.qnia_key;
 SELECT min(start) AS earliest FROM qnia.qnia_key;
 SELECT count(*) AS shape FROM mei.mei_key;
