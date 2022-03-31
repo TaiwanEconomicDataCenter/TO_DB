@@ -112,8 +112,8 @@ def SELECT_DATABASES(NAME):
     pwd = GET_PWD()
     
     engine = create_engine('mysql+pymysql://root:'+pwd+'@localhost:3306/'+NAME.lower())
-    print("SELECT db_table FROM "+NAME.lower()+"_key GROUP BY db_table, Time: "+str(int(time.time() - tStart))+" s"+"\n")
-    table_keys = pd.read_sql_query("SELECT db_table FROM "+NAME.lower()+"_key GROUP BY db_table", engine).squeeze().tolist()
+    print("SELECT db_table FROM "+NAME.lower()+"_key GROUP BY db_table ORDER BY db_table, Time: "+str(int(time.time() - tStart))+" s"+"\n")
+    table_keys = pd.read_sql_query("SELECT db_table FROM "+NAME.lower()+"_key GROUP BY db_table ORDER BY db_table", engine).squeeze().tolist()
     print('Time: '+str(int(time.time() - tStart))+' s'+'\n')
 
     DATA_BASE_dict = {}
