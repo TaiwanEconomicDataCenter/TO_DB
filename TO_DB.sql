@@ -23,7 +23,7 @@ SELECT * FROM gerfin.gerfin_key;
 SELECT * FROM forex.forex_key;
 SELECT * FROM us.us_key;
 SELECT * FROM intline.intline_key;
-SELECT * FROM asia.asia_key;
+SELECT * FROM asia.asia_key WHERE name='M158MHLEI1.M';
 DESC qnia.qnia_key;
 
 /*backup*/
