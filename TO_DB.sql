@@ -13,7 +13,11 @@ SELECT min(start) AS earliest FROM us.us_key;
 SELECT min(start) AS earliest FROM us.us_key WHERE freq='W';
 SELECT count(*) AS shape FROM intline.intline_key;
 SELECT min(start) AS earliest FROM intline.intline_key;
-SELECT min(start) AS earliest FROM intline.intline_key WHERE freq='W';
+/*SELECT min(start) AS earliest FROM intline.intline_key WHERE freq='W';*/
+SELECT min(intline.intline_key.start) AS earliest FROM intline.intline_key 
+LEFT JOIN asia.asia_key
+ON intline.intline_key.name=asia.asia_key.name
+WHERE asia.asia_key.databank is null AND intline.intline_key.freq='W';
 SELECT count(*) AS shape FROM asia.asia_key;
 SELECT min(start) AS earliest FROM asia.asia_key;
 SELECT min(start) AS earliest FROM asia.asia_key WHERE freq='W';
