@@ -32,7 +32,7 @@ def readExcelFile(dir, default=pd.DataFrame(), acceptNoFile=False, \
 
 # using_database = True
 def GET_PWD():
-    pwd = open('../TO_DB/password.txt','r',encoding='ANSI').read()
+    pwd = open('../../TO_DB/TO_DB/password.txt','r',encoding='ANSI').read()
     return pwd
 
 def INSERT_TABLES_FROM_EXCEL():
