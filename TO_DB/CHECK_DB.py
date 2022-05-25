@@ -80,13 +80,14 @@ for f in freqlist:
             result = pd.concat([result, pd.DataFrame([['modified:', True]])])
             modified += 1
             modified_old_item = pd.DataFrame([name, 'Old'], index=['NAME', 'BANK'])
-            modified_old_item = pd.concat([modified_old_item, old_data]).T
+            modified_old_item = pd.concat([modified_old_item, old_data.iloc[::-1]]).T
             modified_new_item = pd.DataFrame([name, 'New'], index=['NAME', 'BANK'])
-            modified_new_item = pd.concat([modified_new_item, new_data]).T
+            modified_new_item = pd.concat([modified_new_item, new_data.iloc[::-1]]).T
             modified_data[f] = pd.concat([modified_data[f], modified_old_item, modified_new_item])
         else:
             result = pd.concat([result, pd.DataFrame([['modified:', False]])])
         result = pd.concat([result, blank])
+    modified_data[f] = modified_data[f].dropna(axis=1, how="all")
 sys.stdout.write("\n\n")
 
 print('\nRun Time: '+str(int(time.time() - tStart))+' s'+'\n')
