@@ -11,7 +11,7 @@ from sqlalchemy.dialects.mysql import DOUBLE
 
 ENCODING = 'utf-8-sig'
 
-def ERROR(special_text):
+def ERROR(error_text):
     sys.stdout.write('\n\n')
     print('= ! = '+error_text)
     sys.stdout.write('\n\n')
@@ -102,7 +102,7 @@ def SELECT_DF_KEY(NAME):
     pwd = GET_PWD()
     
     engine = create_engine('mysql+pymysql://root:'+pwd+'@localhost:3306/'+NAME.lower())
-    DF_KEY = pd.read_sql_query("SELECT * FROM "+NAME.lower()+"_key", engine)
+    DF_KEY = pd.read_sql_query("SELECT * FROM "+NAME.lower().replace('_old','')+"_key", engine)
     DF_KEY = DF_KEY.applymap(lambda x: int(x) if str(x).isnumeric() else x)
 
     return DF_KEY
@@ -112,8 +112,8 @@ def SELECT_DATABASES(NAME):
     pwd = GET_PWD()
     
     engine = create_engine('mysql+pymysql://root:'+pwd+'@localhost:3306/'+NAME.lower())
-    print("SELECT db_table FROM "+NAME.lower()+"_key GROUP BY db_table ORDER BY db_table, Time: "+str(int(time.time() - tStart))+" s"+"\n")
-    table_keys = pd.read_sql_query("SELECT db_table FROM "+NAME.lower()+"_key GROUP BY db_table ORDER BY db_table", engine).squeeze().tolist()
+    print("SELECT db_table FROM "+NAME.lower().replace('_old','')+"_key GROUP BY db_table ORDER BY db_table, Time: "+str(int(time.time() - tStart))+" s"+"\n")
+    table_keys = pd.read_sql_query("SELECT db_table FROM "+NAME.lower().replace('_old','')+"_key GROUP BY db_table ORDER BY db_table", engine).squeeze().tolist()
     print('Time: '+str(int(time.time() - tStart))+' s'+'\n')
 
     DATA_BASE_dict = {}
