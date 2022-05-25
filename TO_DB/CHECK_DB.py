@@ -17,7 +17,6 @@ ENCODING = 'utf-8-sig'
 out_path = './output/'
 
 tStart = time.time()
-BOOL = {'T':True, 'F':False, 't':True, 'f':False, '1':True, '0':False}
 NAME = input("\nCheck Bank: ")
 
 print('\n\nSELECT * FROM '+NAME.lower()+'_old'+'.'+NAME.lower()+'_key'+'\n')
