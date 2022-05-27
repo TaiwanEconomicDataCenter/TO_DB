@@ -75,14 +75,14 @@ for f in freqlist:
         result = pd.concat([result, pd.DataFrame([['New', name, f, new_item['start'], new_item['last'], new_item['desc_e']]])])
         old_data = DATA_BASE_t_old[old_item['db_table']][old_item['db_code']]
         new_data = DATA_BASE_t[new_item['db_table']][new_item['db_code']]
-        if not old_data.equals(new_data):
+        if not old_data.dropna().equals(new_data.dropna()):
             result = pd.concat([result, pd.DataFrame([['modified:', True]])])
             modified += 1
             modified_old_item = pd.DataFrame([name, 'Old'], index=['NAME', 'BANK'])
             modified_old_item = pd.concat([modified_old_item, old_data.iloc[::-1]]).T
             modified_new_item = pd.DataFrame([name, 'New'], index=['NAME', 'BANK'])
             modified_new_item = pd.concat([modified_new_item, new_data.iloc[::-1]]).T
-            modified_data[f] = pd.concat([modified_data[f], modified_old_item, modified_new_item])
+            modified_data[f] = pd.concat([modified_data[f], pd.concat([modified_new_item, modified_old_item]).iloc[::-1]])
         else:
             result = pd.concat([result, pd.DataFrame([['modified:', False]])])
         result = pd.concat([result, blank])
