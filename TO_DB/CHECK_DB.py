@@ -79,9 +79,15 @@ for f in freqlist:
             result = pd.concat([result, pd.DataFrame([['modified:', True]])])
             modified += 1
             modified_old_item = pd.DataFrame([name, 'Old'], index=['NAME', 'BANK'])
-            modified_old_item = pd.concat([modified_old_item, old_data.iloc[::-1]]).T
+            if f != 'D':
+                modified_old_item = pd.concat([modified_old_item, old_data.iloc[::-1]]).T
+            else:
+                modified_old_item = pd.concat([modified_old_item, old_data]).T
             modified_new_item = pd.DataFrame([name, 'New'], index=['NAME', 'BANK'])
-            modified_new_item = pd.concat([modified_new_item, new_data.iloc[::-1]]).T
+            if f != 'D':
+                modified_new_item = pd.concat([modified_new_item, new_data.iloc[::-1]]).T
+            else:
+                modified_new_item = pd.concat([modified_new_item, new_data]).T
             modified_data[f] = pd.concat([modified_data[f], pd.concat([modified_new_item, modified_old_item]).iloc[::-1]])
         else:
             result = pd.concat([result, pd.DataFrame([['modified:', False]])])
