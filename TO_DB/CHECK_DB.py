@@ -42,6 +42,7 @@ freqdata = {}
 freqsample = {}
 for f in freqlist:
     freqdata[f] = list(df_key_old.loc[df_key_old["freq"] == f]["name"])
+    # freqdata[f] = list(df_key_old.loc[(df_key_old["freq"] == f) & (df_key_old["source"] != 'WM/Reuters')]["name"])
     random.shuffle(freqdata[f])
     freqsample[f] = freqdata[f][:sample_num]
 print('Samplings: '+str(sample_num*len(freqlist))+' items in total')
