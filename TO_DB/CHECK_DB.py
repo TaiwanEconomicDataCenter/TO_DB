@@ -94,6 +94,12 @@ for f in freqlist:
             if displayed <= display_num and len(new_data.dropna()) > len(old_data.dropna()):
                 result = pd.concat([result, blank])
     modified_data[f] = modified_data[f].dropna(axis=1, how="all")
+    if f == 'A':
+        modified_data[f].columns = [str(col) for col in modified_data[f].columns]
+        modified_data[f] = modified_data[f].sort_index(axis=1, ascending=False)
+        modified_data[f].columns = [int(col) if col.isnumeric() else col for col in modified_data[f].columns]
+    else:
+        modified_data[f] = modified_data[f].sort_index(axis=1, ascending=False)
 sys.stdout.write("\n\n")
 
 print('\nRun Time: '+str(int(time.time() - tStart))+' s'+'\n')
