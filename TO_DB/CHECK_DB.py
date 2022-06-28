@@ -36,34 +36,29 @@ result = pd.concat([result, size])
 result = pd.concat([result, blank])
 
 print('\nRun Time: '+str(int(time.time() - tStart))+' s'+'\n')
-sample_num = 30
+sample_num = df_key_old.shape[0]
+display_num = 10
 freqlist = list(df_key_old["freq"].drop_duplicates())
 freqdata = {}
 freqsample = {}
 for f in freqlist:
     freqdata[f] = list(df_key_old.loc[df_key_old["freq"] == f]["name"])
     # freqdata[f] = list(df_key_old.loc[(df_key_old["freq"] == f) & (df_key_old["source"] != 'WM/Reuters')]["name"])
-    random.shuffle(freqdata[f])
+    # random.shuffle(freqdata[f])
     freqsample[f] = freqdata[f][:sample_num]
-print('Samplings: '+str(sample_num*len(freqlist))+' items in total')
-result = pd.concat([result, pd.DataFrame([['Samplings:', str(sample_num*len(freqlist))+' items in total']])])
-result = pd.concat([result, pd.DataFrame([['FREQ', 'NAME']])])
-for f in freqlist:
-    for name in freqsample[f]:
-        print(f, name)
-        result = pd.concat([result, pd.DataFrame([[f, name]])])
-result = pd.concat([result, blank])
+
 print('\nComparison:')
 modified = 0
+displayed = 0
 modified_data = {}
 for f in freqlist:
     modified_data[f] = pd.DataFrame()
-result = pd.concat([result, pd.DataFrame([['Comparison:', '']])])
+result = pd.concat([result, pd.DataFrame([['Comparison:', 'display '+str(display_num)]])])
 result = pd.concat([result, pd.DataFrame([['BANK', 'NAME', 'FREQ', 'START', 'LAST', 'DESCRIPTION']])])
 result = pd.concat([result, blank])
 for f in freqlist:
     for name in freqsample[f]:
-        sys.stdout.write("\rName = "+name+"     ")
+        sys.stdout.write("\rChecking...("+str(round((freqsample[f].index(name)+1)*100/len(freqsample[f]), 1))+"%), Name = "+name+"     ")
         sys.stdout.flush()
 
         old_item = df_key_old.loc[df_key_old['name'] == name].squeeze()
@@ -72,12 +67,15 @@ for f in freqlist:
             ERROR('Name Not Found in database '+NAME.lower()+': '+name)
         if new_item.empty:
             ERROR('Name Not Found in database '+NAME.lower()+'_old: '+name)
-        result = pd.concat([result, pd.DataFrame([['Old', name, f, old_item['start'], old_item['last'], old_item['desc_e']]])])
-        result = pd.concat([result, pd.DataFrame([['New', name, f, new_item['start'], new_item['last'], new_item['desc_e']]])])
+        
         old_data = DATA_BASE_t_old[old_item['db_table']][old_item['db_code']]
         new_data = DATA_BASE_t[new_item['db_table']][new_item['db_code']]
         if not old_data.dropna().equals(new_data.dropna()):
-            result = pd.concat([result, pd.DataFrame([['modified:', True]])])
+            if displayed <= display_num and len(new_data.dropna()) > len(old_data.dropna()):
+                result = pd.concat([result, pd.DataFrame([['Old', name, f, old_item['start'], old_item['last'], old_item['desc_e']]])])
+                result = pd.concat([result, pd.DataFrame([['New', name, f, new_item['start'], new_item['last'], new_item['desc_e']]])])
+                result = pd.concat([result, pd.DataFrame([['modified:', True]])])
+                displayed += 1
             modified += 1
             modified_old_item = pd.DataFrame([name, 'Old'], index=['NAME', 'BANK'])
             if f != 'D':
@@ -89,15 +87,18 @@ for f in freqlist:
                 modified_new_item = pd.concat([modified_new_item, new_data.iloc[::-1]]).T
             else:
                 modified_new_item = pd.concat([modified_new_item, new_data]).T
-            modified_data[f] = pd.concat([modified_data[f], pd.concat([modified_new_item, modified_old_item]).iloc[::-1]])
-        else:
-            result = pd.concat([result, pd.DataFrame([['modified:', False]])])
-        result = pd.concat([result, blank])
+            modified_result = pd.concat([modified_new_item, modified_old_item], ignore_index=True).iloc[::-1].T.dropna(axis=0, how="all")
+            modified_data[f] = pd.concat([modified_data[f], pd.concat([modified_result.loc["NAME"], modified_result[modified_result[0] != modified_result[1]].T], axis=1)])
+            # else:
+            #     result = pd.concat([result, pd.DataFrame([['modified:', False]])])
+            if displayed <= display_num and len(new_data.dropna()) > len(old_data.dropna()):
+                result = pd.concat([result, blank])
     modified_data[f] = modified_data[f].dropna(axis=1, how="all")
 sys.stdout.write("\n\n")
 
 print('\nRun Time: '+str(int(time.time() - tStart))+' s'+'\n')
 print("Total Modified items = "+str(modified))
+result = pd.concat([result, blank])
 result = pd.concat([result, pd.DataFrame([['Total Modified items:', modified]])])
 
 print('\nOutputing Results, Time: '+str(int(time.time() - tStart))+' s'+'\n')
